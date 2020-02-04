@@ -1,10 +1,10 @@
 =begin
 
-	Author: Brandon Stenhouse
-	Date: 04/02/20
-	Version: 0.1
-	Purpose: This Ruby script is to access the Office365 API to collect
-	all IP and URLs that Office365 use.
+Author: Brandon Stenhouse
+Date: 04/02/20
+Version: 0.1
+Purpose: This Ruby script is to access the Office365 API to collect
+all IP and URLs that Office365 use.
 
 =end
 
@@ -16,67 +16,96 @@ require 'ipaddr'
 
 class Office365
 
-	@@O365_url = "https://endpoints.office.com/endpoints/worldwide"
-	@Call
-	@Subnets
-	@Urls
+	=begin
+	O365_url: The path to the Office365 API (unchanged part)
+	@O365_path: The completed path with type and GUID to Office365 API
+	@O365_Services: The output from the API call in JSON format
+	=end
 
-	def initialize guid, format
+	O365_url = "https://endpoints.office.com/endpoints/worldwide"
+	@O365_path
+	@O365_Services
 
-		@Call = URI.parse "#{@@O365_url}?format=#{format}&clientrequestid=#{guid}"
-		initClass()
+	=begin
+
+	Name:
+		initialize
+	Arguments:
+		- guid: A Generated GUID to be used as the client request ID to Office365 API
+	Return:
+		None
+	Description:
+		Setup the class and make the API call.
+
+	=end
+	def initialize guid
+		@O365_path = URI.parse "#{O365_url}?format=json&clientrequestid=#{guid}"
+		@O365_Services = Array.new
 		apiCall()
 	end
 
-	def getO365Subnets
-		return @Subnets
-	end
+	=begin
 
-	def getO365Urls
-		return @Urls
-	end
+	Name:
+		getO365
+	Arguments:
+		- type <subnet|url>: To control the return type from the function
+		- service <sting|id>: To control the search of the function
+	Return:
+		Array of Subnets or URLs
+	Description:
+		Parse the API return and return a array of IPs or URLs on all services or a
+		specific service.
 
-	def updateO365
-		initClass()
-		apiCall()
+	=end
+	def getO365 type="subnet", service=nil
+		rt = Array.new
+		@O365_Services.each do |s|
+			if s["serviceArea"].match service || s["id"] === service || service.nil? then
+				if type.match "subnet" && s["ips"] then
+					s["ips"].each do |ip|
+						temp_ip = IPAddr.new ip
+						rt.push temp_ip if temp_ip.ipv4?
+					end
+				end
+				if type.match "url" && s["urls"] then
+					s["urls"].each {|url| rt.push url}
+				end
+			end
+		end
+
+		return rt
 	end
 
 	private
 
-	def initClass
-		@Subnets = Array.new
-		@Urls = Array.new
-	end
+	=begin
 
+	Name:
+		apiCall
+	Arguments:
+		None
+	Return:
+		None
+	Description:
+		Create and complete the GET request, save the results to
+		@O365_Services JSON parsed
+
+	=end
 	def apiCall
 		# Build Request
-		req = Net::HTTP::Get.new @Call.request_uri
-		http = Net::HTTP.new @Call.host, @Call.port
+		req = Net::HTTP::Get.new @O365_path.request_uri
+		http = Net::HTTP.new @O365_path.host, @O365_path.port
 		http.use_ssl = true
 
 		# Make the request
 		res = http.request req
 		if res.code == "200"
-			parseResponse JSON.parse res.body
+			@O365_Services JSON.parse res.body
 		else
 			raise IOError, "Invaild response from Office365 API: #{res.code} - #{res.body}"
 		end
 
-	end
-
-	def parseResponse json
-		temp_urls = Array.new
-		temp_ips = Array.new
-		json.each do |e|
-			e["urls"].each { |url| temp_urls.push(url)} if e["urls"]
-			if e["ips"] then
-				e["ips"].each do |ip|
-					temp_ips.push(ip) if IPAddr.new(ip).ipv4?()
-				end
-			end
-		end
-		@Urls = temp_urls.uniq.sort
-		@Subnets = temp_ips.uniq.sort
 	end
 
 end
