@@ -18,7 +18,7 @@ class Office365
 
 	@@O365_url = "https://endpoints.office.com/endpoints/worldwide"
 	@Call
-	@Subnet
+	@Subnets
 	@Urls
 
 	def initialize guid, format
@@ -29,11 +29,11 @@ class Office365
 	end
 
 	def getO365Subnets
-		return @Subnet.uniq.sort
+		return @Subnets
 	end
 
 	def getO365Urls
-		return @Urls.uniq.sort
+		return @Urls
 	end
 
 	def updateO365
@@ -76,7 +76,7 @@ class Office365
 			end
 		end
 		@Urls = temp_urls.uniq.sort
-		@Ips = temp_ips.uniq.sort
+		@Subnets = temp_ips.uniq.sort
 	end
 
 end
