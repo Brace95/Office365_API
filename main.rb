@@ -16,6 +16,6 @@ require_relative 'office'
 GUID = "ab1a058f-8756-4708-8866-7b811618fb97"
 
 puts "hello"
-o365 = Office365.new GUID, "json"
+o365 = Office365.new GUID
 
 puts o365.getO365Subnets
