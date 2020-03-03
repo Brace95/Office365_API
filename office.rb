@@ -16,48 +16,48 @@ require 'ipaddr'
 
 class Office365
 
-	=begin
-	O365_url: The path to the Office365 API (unchanged part)
-	@O365_path: The completed path with type and GUID to Office365 API
-	@O365_Services: The output from the API call in JSON format
-	=end
+=begin
+O365_url: The path to the Office365 API (unchanged part)
+@O365_path: The completed path with type and GUID to Office365 API
+@O365_Services: The output from the API call in JSON format
+=end
 
 	O365_url = "https://endpoints.office.com/endpoints/worldwide"
 	@O365_path
 	@O365_Services
 
-	=begin
+=begin
 
-	Name:
-		initialize
-	Arguments:
-		- guid: A Generated GUID to be used as the client request ID to Office365 API
-	Return:
-		None
-	Description:
-		Setup the class and make the API call.
+Name:
+	initialize
+Arguments:
+	- guid: A Generated GUID to be used as the client request ID to Office365 API
+Return:
+	None
+Description:
+	Setup the class and make the API call.
 
-	=end
+=end
 	def initialize guid
 		@O365_path = URI.parse "#{O365_url}?format=json&clientrequestid=#{guid}"
 		@O365_Services = Array.new
 		apiCall()
 	end
 
-	=begin
+=begin
 
-	Name:
-		getO365
-	Arguments:
-		- type <subnet|url>: To control the return type from the function
-		- service <sting|id>: To control the search of the function
-	Return:
-		Array of Subnets or URLs
-	Description:
-		Parse the API return and return a array of IPs or URLs on all services or a
-		specific service.
+Name:
+	getO365
+Arguments:
+	- type <subnet|url>: To control the return type from the function
+	- service <sting|id>: To control the search of the function
+Return:
+	Array of Subnets or URLs
+Description:
+	Parse the API return and return a array of IPs or URLs on all services or a
+	specific service.
 
-	=end
+=end
 	def getO365 type="subnet", service=nil
 		rt = Array.new
 		@O365_Services.each do |s|
@@ -79,19 +79,19 @@ class Office365
 
 	private
 
-	=begin
+=begin
 
-	Name:
-		apiCall
-	Arguments:
-		None
-	Return:
-		None
-	Description:
-		Create and complete the GET request, save the results to
-		@O365_Services JSON parsed
+Name:
+	apiCall
+Arguments:
+	None
+Return:
+	None
+Description:
+	Create and complete the GET request, save the results to
+	@O365_Services JSON parsed
 
-	=end
+=end
 	def apiCall
 		# Build Request
 		req = Net::HTTP::Get.new @O365_path.request_uri
