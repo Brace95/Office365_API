@@ -101,7 +101,7 @@ Description:
 		# Make the request
 		res = http.request req
 		if res.code == "200"
-			@O365_Services JSON.parse res.body
+			@O365_Services = JSON.parse res.body
 		else
 			raise IOError, "Invaild response from Office365 API: #{res.code} - #{res.body}"
 		end
