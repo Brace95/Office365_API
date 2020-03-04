@@ -62,13 +62,13 @@ Description:
 		rt = Array.new
 		@O365_Services.each do |s|
 			if service.nil? || s["serviceArea"].match(service) || s["id"] == service then
-				if type.match "subnet" && s["ips"] then
+				if type.match("subnet") && s["ips"] then
 					s["ips"].each do |ip|
 						temp_ip = IPAddr.new ip
 						rt.push temp_ip if temp_ip.ipv4?
 					end
 				end
-				if type.match "url" && s["urls"] then
+				if type.match("url") && s["urls"] then
 					s["urls"].each {|url| rt.push url}
 				end
 			end
