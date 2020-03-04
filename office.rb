@@ -99,9 +99,11 @@ Description:
 		http.use_ssl = true
 
 		# Make the request
+		puts "Making API call..."
 		res = http.request req
 		if res.code == "200"
 			@O365_Services = JSON.parse res.body
+			puts "Making API call..."
 		else
 			raise IOError, "Invaild response from Office365 API: #{res.code} - #{res.body}"
 		end
