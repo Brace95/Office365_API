@@ -61,7 +61,7 @@ Description:
 	def getO365 type="subnet", service=nil
 		rt = Array.new
 		@O365_Services.each do |s|
-			if s["serviceArea"].match service || s["id"] === service || service.nil? then
+			if service.nil? || s["serviceArea"].match service || s["id"] === service  then
 				if type.match "subnet" && s["ips"] then
 					s["ips"].each do |ip|
 						temp_ip = IPAddr.new ip
