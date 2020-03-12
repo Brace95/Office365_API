@@ -3,6 +3,8 @@
 Author: Brandon Stenhouse
 Date: 04/02/20
 Version: 0.1
+Project: Office365 Automation
+File: office.rb
 Purpose: This Ruby script is to access the Office365 API to collect
 all IP and URLs that Office365 use.
 
