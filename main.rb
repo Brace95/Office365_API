@@ -20,4 +20,4 @@ GUID = "ab1a058f-8756-4708-8866-7b811618fb97"
 
 o365 = Office365.new GUID
 
-puts o365.getO365.each { |ip| "#{ip.to_string}/#{ip.prefix}"}
+puts o365.getO365.each { |ip| "#{ip.to_string()}/#{ip.prefix()}"}
